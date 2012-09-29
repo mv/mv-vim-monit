@@ -1,6 +1,6 @@
 
 snippet process
-	check process ${1}
+	process ${1}
 	  with pidfile /path/to/pid.pid
 	  start program = "/etc/init.d/${1} start" as uid ${2} as gid ${3}
 	  stop  program = "/etc/init.d/${1} stop"
@@ -15,7 +15,7 @@ snippet process
 
 
 snippet system
-	check system myhost.mydomain.tld
+	system myhost.mydomain.tld
 	  if loadavg (1min) > 4   then alert
 	  if loadavg (5min) > 2   then alert
 	  if memory usage   > 75% then alert
@@ -26,7 +26,7 @@ snippet system
 
 
 snippet filesystem
-	check filesystem datafs with path /dev/sdb1
+	filesystem datafs with path /dev/sdb1
 	  start program  = "/bin/mount /data"
 	  stop  program  = "/bin/umount /data"
 	  if failed permission 660 then unmonitor
@@ -40,7 +40,7 @@ snippet filesystem
 
 
 snippet file
-	check file ${1:filename} with path ${2:/path/to/file}
+	file ${1:filename} with path ${2:/path/to/file}
 	  if failed permission ${3:700} then alert
 	  if failed uid data then alert
 	  if failed gid data then alert
@@ -49,14 +49,14 @@ snippet file
 
 
 snippet dir
-	check directory bin with path /bin
+	directory bin with path /bin
 	  if failed permission 755 then unmonitor
 	  if failed uid 0 then unmonitor
 	  if failed gid 0 then unmonitor
 
 
 snippet host
-	check host myserver with address 192.168.1.1
+	host myserver with address 192.168.1.1
 	  if failed icmp type echo count 3   with timeout  3 seconds then alert
 	  if failed port 3306 protocol mysql with timeout 15 seconds then alert
 	  if failed  url http://user:password@www.foo.bar:8080/?querystring
