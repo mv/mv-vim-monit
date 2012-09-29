@@ -1,0 +1,68 @@
+
+snippet process
+	check process ${1}
+	  with pidfile /path/to/pid.pid
+	  start program = "/etc/init.d/${1} start" as uid ${2} as gid ${3}
+	  stop  program = "/etc/init.d/${1} stop"
+	  if mem      > 200.0 MB for 1 cycles then restart
+	  if cpu      > 50%      for 2 cycles then alert
+	  if cpu      > 80%      for 3 cycles then restart
+	  if totalmem > 200.0 MB for 5 cycles then restart
+	  if children > 250 then restart
+	  if loadavg(5min) > 10 for 8 cycles then stop
+	 #depends on apache_bin
+	  group ${1}-group
+
+
+snippet system
+	check system myhost.mydomain.tld
+	  if loadavg (1min) > 4   then alert
+	  if loadavg (5min) > 2   then alert
+	  if memory usage   > 75% then alert
+	  if   swap usage   > 25% then alert
+	  if    cpu usage (user)   > 70% then alert
+	  if    cpu usage (system) > 30% then alert
+	  if    cpu usage (wait)   > 20% then alert
+
+
+snippet filesystem
+	check filesystem datafs with path /dev/sdb1
+	  start program  = "/bin/mount /data"
+	  stop  program  = "/bin/umount /data"
+	  if failed permission 660 then unmonitor
+	  if failed uid root then unmonitor
+	  if failed gid disk then unmonitor
+	  if space usage > 80% for 5 times within 15 cycles then alert
+	  if space usage > 99%   then stop
+	  if inode usage > 30000 then alert
+	  if inode usage > 99%   then stop
+	  group server
+
+
+snippet file
+	check file ${1:filename} with path ${2:/path/to/file}
+	  if failed permission ${3:700} then alert
+	  if failed uid data then alert
+	  if failed gid data then alert
+	  if timestamp > 15 minutes then alert
+	  if      size > 100 MB     then exec "/my/cleanup/script" as uid dba and gid dba
+
+
+snippet dir
+	check directory bin with path /bin
+	  if failed permission 755 then unmonitor
+	  if failed uid 0 then unmonitor
+	  if failed gid 0 then unmonitor
+
+
+snippet host
+	check host myserver with address 192.168.1.1
+	  if failed icmp type echo count 3   with timeout  3 seconds then alert
+	  if failed port 3306 protocol mysql with timeout 15 seconds then alert
+	  if failed  url http://user:password@www.foo.bar:8080/?querystring
+	     and content == 'action="j_security_check"'
+	     then alert
+
+
+# vim:ft=snippet.monit ts=4 sts=4 sw=4 noet nosta list foldlevel=9:
+
